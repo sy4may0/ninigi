@@ -10,7 +10,7 @@
         <v-col cols="12">
           <v-text-field
             label="Title"
-            v-model="task.title"
+            v-model="task.name"
             hint="Task Title"
             required
           ></v-text-field>
@@ -56,6 +56,15 @@
 
 <script>
 // @ is an alias to /src
+import axios from 'axios';
+
+const request = axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+},
+  responseType: 'json',
+});
 
 export default {
   name: 'EditTask',
@@ -70,7 +79,20 @@ export default {
     cancel: function() {
       this.$emit('close')
     },
-    apply: function() {
+    apply: async function() {
+      this.task.user = this.$store.state.user;
+      if(this.task._id) {
+        await request.post(
+          '/task/' + this.task._id,
+          this.task
+        );
+      } else {
+        await request.post(
+          '/task',
+          this.task
+        );
+      }
+      await this.$store.dispatch('getTasks');
       this.$emit('close')
     },
   },

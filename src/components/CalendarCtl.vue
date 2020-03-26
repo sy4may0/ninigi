@@ -40,7 +40,7 @@
           v-bind:color="$store.state.color.sub"
           v-bind:events="$store.state.events"
           v-bind:event-color="getEventColor"
-          @click:event="openEvent"
+          @click:event="showEvent"
         ></v-calendar>
       </v-container>
     </v-card>
@@ -55,6 +55,48 @@
       ></EditAchievement>
 
     </v-dialog>
+    <v-menu
+      v-model="selectedOpen"
+      :close-on-content-click="false"
+      :activator="selectedElement"
+      offset-x
+    >
+      <v-card
+        color="$store.state.color.main + 'darker-3"
+        min-width="350px"
+        flat
+      >
+        <v-toolbar
+          :color="selectedColor"
+          dark
+        >
+
+          <span v-html="selected.project"></span>
+          <v-spacer></v-spacer>
+          <v-btn 
+            icon
+            v-on:click="openAchievement(selected)"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn icon>
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <span v-html="selected.description"></span>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            text
+            color="$store.state.color.accent"
+            @click="selectedOpen=false"
+          >
+            Cancel
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-menu>
   </v-container>
 </template>
 
@@ -66,7 +108,10 @@ export default {
   data: function(){
     return {
       selected: this.$store.state.initAchievement,
+      selectedElement: undefined, 
       focus: '',
+      selectedOpen: false, 
+      selectedColor: 'orange',
       achievementDialog: false,
     }
   },
@@ -84,10 +129,21 @@ export default {
     getEventColor: function() {
       return "orange";
     },
+
+    // Handle @click some Achievement Create/Update buttons.
+    // - Copy achievement Object to be it to editable.
+    // - Toggle <achievementDialog> dialog switch.
     openAchievement: function(achievement) {
       this.selected = Object.assign({}, achievement);
+      if(this.selected.date === undefined) {
+        this.selected.dates = [];
+      }else if(!Array.isArray(this.selected.date)) {
+        const arr = [this.selected.date];
+        this.selected.dates = arr;
+      }
       this.achievementDialog = true;
     },
+
     closeAchievement: function() {
       this.selected = this.$store.state.initAchievement;
       this.achievementDialog = false;
@@ -104,10 +160,27 @@ export default {
     next: function() {
       this.$refs.calendar.next()
     },
-    openEvent: function({nativeEvent, event}) {
-      console.log(event);
-      console.log(nativeEvent);
+
+    // Handle @click calendar event.
+    // - Set achievement object to <selected> valiable. 
+    // - Toggle <selectedOpen> dialog switch.
+    showEvent({ nativeEvent, event }) {
+      const open = () => {
+        this.selected = event.obj;
+        this.selectedColor = event.color;
+        this.selectedElement = nativeEvent.target;
+        setTimeout(() => this.selectedOpen = true, 10);
+      }
+      if (this.selectedOpen) {
+        this.selectedOpen = false;
+        setTimeout(open, 10)
+      } else {
+        open()
+      }
+      nativeEvent.stopPropagation();
     },
+
+
   },
   components: {
     EditAchievement,

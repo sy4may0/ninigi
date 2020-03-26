@@ -127,6 +127,10 @@
               label="Unexpected"
               v-model="achievement.unexpected"
             ></v-checkbox>
+            <v-checkbox
+              label="Closing"
+              v-model="achievement.closed"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-row>

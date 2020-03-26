@@ -31,7 +31,7 @@
             >
               <v-list-item-content>
 
-                <v-list-item-title v-text="item.title">
+                <v-list-item-title v-text="item.name">
                 </v-list-item-title>
 
                 <v-list-item-subtitle>
@@ -154,7 +154,10 @@ export default {
       achievementDialog: false,
     }
   },
-
+  created: async function() {
+    await this.$store.dispatch('getTasks');
+    console.log(this.$store.state.tasks);
+  },
   methods: {
     openEditTask: function(task) {
       this.selected = Object.assign({}, task);

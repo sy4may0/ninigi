@@ -1,10 +1,20 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
+const request = axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+},
+  responseType: 'json',
+});
+
 export default new Vuex.Store({
   state: {
+    apiUrl: process.env.VUE_APP_API_URL,
     user: "",
 
     initTask: {
@@ -18,28 +28,6 @@ export default new Vuex.Store({
       dates: [],
     },
     tasks: [
-      {
-        _id: 0,
-        title: "SSA構築作業　単体試験",
-        project: "SSA",
-        category: "構築作業(設計/提案)",
-        description: "SSA単体試験",
-        edit: false,
-      },
-      {
-        _id: 1,
-        title: "BEACHネットワーク換装　ラック搭載支援作業",
-        project: "BEACH",
-        category: "構築作業",
-        edit: false,
-      },
-      {
-        _id: 2,
-        title: "STRINGS 保守報告書作成",
-        project: "STRINGS",
-        category: "保守作業",
-        edit: false,
-      },
     ],
 
     events: [
@@ -47,19 +35,52 @@ export default new Vuex.Store({
         name: "event0",
         start: "2020-01-02",
         color: "orange",
-        obj: "test",
+        obj: {
+          _id: 1,
+          date: "2020-01-02",
+          unexpected: false,
+          project: "STRINGS",
+          category: "保守作業",
+          description: "test",
+          scheduled: "01:30",
+          actual: "02:00",
+          closed: true,
+          issues: "testissues."
+        },
       },
       {
         name: "event1",
         start: "2020-01-06",
         color: "orange",
-        obj: "test",
+        obj: {
+          _id: 2,
+          date: "2020-01-06",
+          unexpected: false,
+          project: "STRINGS",
+          category: "保守作業",
+          description: "test2",
+          scheduled: "01:30",
+          actual: "02:00",
+          closed: true,
+          issues: "testissues2."
+        },
       },
       {
         name: "event2",
         start: "2020-01-07",
         color: "orange",
-        obj: "test",
+        obj: {
+          _id: 2,
+          date: "2020-01-07",
+          unexpected: false,
+          project: "STRINGS",
+          category: "保守作業",
+          description: "test3",
+          scheduled: "01:30",
+          actual: "02:00",
+          closed: true,
+          issues: "testissues3."
+        },
       },
     ],
 
@@ -96,8 +117,19 @@ export default new Vuex.Store({
     setUser (state, user) {
       state.user = user;
     },
+    setTask (state, tasks) {
+      state.tasks = tasks
+    },
   },
   actions: {
+    getTasks : async ( {commit} ) => {
+      const response = await request.get('/task');
+      const tasks = response.data;
+      for(let task of tasks) {
+        task.edit = false;
+      }
+      commit('setTask', tasks);
+    },
     setUser : ({commit}, user) => {
       commit('setUser', user);
     }

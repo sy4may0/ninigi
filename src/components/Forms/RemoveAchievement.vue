@@ -1,9 +1,9 @@
 <template>
   <v-card
-    v-if="task !== undefined"
+    v-if="achievement !== undefined"
   >
     <v-card-title>
-      <span class="headline">Remove Task</span>
+      <span class="headline">Remove Achievement</span>
     </v-card-title>
     <v-card-text>
       <v-alert
@@ -11,7 +11,7 @@
         outlined
         type="error"
       >
-        Are you sure want to remove following task?<br>"{{ task.title }}"
+        Are you sure want to remove following Achievement?<br>"{{ achievement.title }}"
       </v-alert>
     </v-card-text>
     <v-card-actions>
@@ -43,23 +43,23 @@ const request = axios.create({
 });
 
 export default {
-  name: 'RemoveTask',
+  name: 'RemoveAchievement',
   model: {
-    prop: 'task',
+    prop: 'achievement',
     event: 'input',
   },
   props: {
-    task: Object,
+    achievement: Object,
   },
   methods: {
     cancel: function() {
       this.$emit('close')
     },
     apply: async function() {
-      await request.delete(
-        '/task/' + this.task._id
-      );
-      await this.$store.dispatch('getTasks')
+      //await request.delete(
+      //  '/achievement/' + this.task._id
+      //);
+      //await this.$store.dispatch('getAchievement')
       this.$emit('close')
     },
   },
