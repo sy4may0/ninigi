@@ -15,12 +15,13 @@ const request = axios.create({
 export default new Vuex.Store({
   state: {
     apiUrl: process.env.VUE_APP_API_URL,
-    user: "",
+    user: undefined,
 
     initTask: {
     },
     initAchievement: {
-      uexpected: false,
+      unexpected: false,
+      closed: false,
       description: "",
       scheduled: "00:00",
       actual: "00:00",
@@ -30,59 +31,7 @@ export default new Vuex.Store({
     tasks: [
     ],
 
-    events: [
-      {
-        name: "event0",
-        start: "2020-01-02",
-        color: "orange",
-        obj: {
-          _id: 1,
-          date: "2020-01-02",
-          unexpected: false,
-          project: "STRINGS",
-          category: "保守作業",
-          description: "test",
-          scheduled: "01:30",
-          actual: "02:00",
-          closed: true,
-          issues: "testissues."
-        },
-      },
-      {
-        name: "event1",
-        start: "2020-01-06",
-        color: "orange",
-        obj: {
-          _id: 2,
-          date: "2020-01-06",
-          unexpected: false,
-          project: "STRINGS",
-          category: "保守作業",
-          description: "test2",
-          scheduled: "01:30",
-          actual: "02:00",
-          closed: true,
-          issues: "testissues2."
-        },
-      },
-      {
-        name: "event2",
-        start: "2020-01-07",
-        color: "orange",
-        obj: {
-          _id: 2,
-          date: "2020-01-07",
-          unexpected: false,
-          project: "STRINGS",
-          category: "保守作業",
-          description: "test3",
-          scheduled: "01:30",
-          actual: "02:00",
-          closed: true,
-          issues: "testissues3."
-        },
-      },
-    ],
+    events: [],
 
     // [TODO] mutation and dispatch
     users: [
@@ -93,15 +42,16 @@ export default new Vuex.Store({
     projects: [
       "INITS",
       "MINITS",
-      "GOSAT",
-      "GOSAT-2",
-      "SSA",
+      "GOSAT系",
+      "デブリ",
     ],
 
     categories: [
-      "要望対応",
-      "月次作業",
-      "構築作業(設計/提案)",
+      "要望事項対応",
+      "衣装対応(ソフト)",
+      "衣装対応(ハード)",
+      "提案活動(商談)",
+      "構築(設計・構築・試験含む)",
       "雑務",
     ],
 
@@ -111,26 +61,49 @@ export default new Vuex.Store({
       accent: 'purple'
     },
 
-
   },
   mutations: {
     setUser (state, user) {
       state.user = user;
     },
     setTask (state, tasks) {
-      state.tasks = tasks
+      state.tasks = tasks;
+    },
+    setEvent (state, achievements) {
+      state.events = [];
+      for (let achievement of achievements) {
+        state.events.push({
+            name: achievement.project,
+            start: achievement.date,
+            color: "orange",
+            obj: achievement,
+        });
+      }
     },
   },
   actions: {
-    getTasks : async ( {commit} ) => {
-      const response = await request.get('/task');
+    getTasks : async ( {state, commit} ) => {
+      const response = await request.get('/task', {
+        params: {
+          user: state.user 
+        }
+      });
       const tasks = response.data;
       for(let task of tasks) {
         task.edit = false;
       }
       commit('setTask', tasks);
     },
-    setUser : ({commit}, user) => {
+    getEvents : async ( {state, commit} ) => {
+      const response = await request.get('/achievement', {
+        params: {
+          user: state.user 
+        }
+      });
+      const achievements = response.data;
+      commit('setEvent', achievements);
+    },
+    setUser : async ({commit}, user) => {
       commit('setUser', user);
     }
   },

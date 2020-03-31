@@ -156,7 +156,6 @@ export default {
   },
   created: async function() {
     await this.$store.dispatch('getTasks');
-    console.log(this.$store.state.tasks);
   },
   methods: {
     openEditTask: function(task) {
@@ -182,7 +181,7 @@ export default {
       this.selectedAchievement.project = task.project;
       this.selectedAchievement.category = task.category;
       this.selectedAchievement.description = 
-            "Title: " + task.title + "\n" +
+            "Title: " + task.name + "\n" +
             "Overview: \n" + task.description;
 
       this.achievementDialog = true;

@@ -11,7 +11,7 @@
         outlined
         type="error"
       >
-        Are you sure want to remove following Achievement?<br>"{{ achievement.title }}"
+        Are you sure want to remove following Achievement?<br>"{{ achievement.description }}"
       </v-alert>
     </v-card-text>
     <v-card-actions>
@@ -56,10 +56,10 @@ export default {
       this.$emit('close')
     },
     apply: async function() {
-      //await request.delete(
-      //  '/achievement/' + this.task._id
-      //);
-      //await this.$store.dispatch('getAchievement')
+      await request.delete(
+        '/achievement/' + this.achievement._id
+      );
+      await this.$store.dispatch('getEvents')
       this.$emit('close')
     },
   },

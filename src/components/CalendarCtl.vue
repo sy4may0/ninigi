@@ -55,6 +55,16 @@
       ></EditAchievement>
 
     </v-dialog>
+    <v-dialog
+      v-model="removeAchievementDialog"
+      max-width="720px"
+    >
+      <RemoveAchievement 
+        v-model="selected"
+        @close="closeRemoveAchievement"
+      ></RemoveAchievement>
+
+    </v-dialog>
     <v-menu
       v-model="selectedOpen"
       :close-on-content-click="false"
@@ -79,12 +89,21 @@
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn icon>
+          <v-btn 
+            icon
+            v-on:click="openRemoveAchievement(selected)"
+          >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-toolbar>
         <v-card-text>
-          <span v-html="selected.description"></span>
+            <v-textarea
+              v-model="selected.description"
+              readonly
+            >
+            </v-textarea>
+            <span>SCHEDULED : {{selected.scheduled}}</span><br>
+            <span>ACTUAL : {{selected.actual}}</span>
         </v-card-text>
         <v-card-actions>
           <v-btn
@@ -102,6 +121,7 @@
 
 <script>
 import EditAchievement from '@/components/Forms/EditAchievement.vue'
+import RemoveAchievement from '@/components/Forms/RemoveAchievement.vue'
 
 export default {
   name: 'CalendarCtl',
@@ -113,6 +133,7 @@ export default {
       selectedOpen: false, 
       selectedColor: 'orange',
       achievementDialog: false,
+      removeAchievementDialog: false,
     }
   },
   computed: {
@@ -124,6 +145,10 @@ export default {
     const d = new Date();
     this.focus = d.toISOString().substring(0,10);
     this.$refs.calendar.checkChange();
+  },
+  created: async function() {
+    await this.$store.dispatch('getEvents');
+
   },
   methods: {
     getEventColor: function() {
@@ -143,10 +168,17 @@ export default {
       }
       this.achievementDialog = true;
     },
-
+    openRemoveAchievement: function(achievement) {
+      this.selected =  achievement;
+      this.removeAchievementDialog = true;
+    },
     closeAchievement: function() {
       this.selected = this.$store.state.initAchievement;
       this.achievementDialog = false;
+    },
+    closeRemoveAchievement: function() {
+      this.selected = this.$store.state.initAchievement;
+      this.removeAchievementDialog = false;
     },
 
     // Calendar control
@@ -184,6 +216,7 @@ export default {
   },
   components: {
     EditAchievement,
+    RemoveAchievement,
   }
 };
 </script>

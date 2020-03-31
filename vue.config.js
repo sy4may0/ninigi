@@ -3,7 +3,7 @@ module.exports = {
     "vuetify"
   ],
   devServer: {
-      host: 'ik1-315-17839.vs.sakura.ne.jp',
+      host: '127.0.0.1',
       hot: true,
       disableHostCheck: true,
   }

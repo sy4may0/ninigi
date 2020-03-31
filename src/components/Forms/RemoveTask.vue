@@ -11,7 +11,7 @@
         outlined
         type="error"
       >
-        Are you sure want to remove following task?<br>"{{ task.title }}"
+        Are you sure want to remove following task?<br>"{{ task.name }}"
       </v-alert>
     </v-card-text>
     <v-card-actions>

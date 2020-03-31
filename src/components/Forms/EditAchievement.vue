@@ -161,6 +161,16 @@
 
 <script>
 // @ is an alias to /src
+import axios from 'axios';
+
+const request = axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+},
+  responseType: 'json',
+});
+
 function incrementTime(time, amount) {
   let h = Number(time.split(':')[0]);
   let m = Number(time.split(':')[1]);
@@ -217,7 +227,13 @@ export default {
   },
   methods: {
     cancel: function() { this.$emit('close'); },
-    apply: function() { 
+    apply: async function() { 
+      this.achievement.user = this.$store.state.user;
+      await request.post(
+        '/achievement',
+        this.achievement
+      );
+      await this.$store.dispatch('getAchievements');
       this.$emit('close'); 
     },
 
