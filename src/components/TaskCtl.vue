@@ -129,6 +129,7 @@
       <EditAchievement 
         v-model="selectedAchievement"
         :hidetask="false"
+        :update="false"
         @close="closeAchievement"
       ></EditAchievement>
 
@@ -181,8 +182,8 @@ export default {
       this.selectedAchievement.project = task.project;
       this.selectedAchievement.category = task.category;
       this.selectedAchievement.description = 
-            "Title: " + task.name + "\n" +
-            "Overview: \n" + task.description;
+            task.name + "\n---\n" +
+            task.description;
 
       this.achievementDialog = true;
     },

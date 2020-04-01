@@ -63,6 +63,16 @@ export default new Vuex.Store({
 
   },
   mutations: {
+    setProjects (state, projects) {
+      state.projects = projects;
+    },
+    setCategories (state, categories) {
+      state.categories = categories;
+    },
+    setUsers (state, users) {
+      state.users = users;
+    },
+ 
     setUser (state, user) {
       state.user = user;
     },
@@ -82,6 +92,13 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    getConfig : async ( {commit} ) => {
+      const response = await request.get('/conf')
+      const data = response.data;
+      commit('setUsers', data.users);
+      commit('setProjects', data.projects);
+      commit('setCategories', data.categories);
+    },
     getTasks : async ( {state, commit} ) => {
       const response = await request.get('/task', {
         params: {

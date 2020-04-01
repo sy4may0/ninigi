@@ -39,8 +39,14 @@
         <v-row>
           <v-col cols="12" sm="6">
             <v-date-picker
+              v-if='update'
               no-title
-              v-model="achievement.dates"
+              v-model="achievement.date"
+            ></v-date-picker>
+            <v-date-picker
+              v-else
+              no-title
+              v-model="dates"
               multiple
             ></v-date-picker>
           </v-col>
@@ -86,14 +92,12 @@
             </v-row>
             <v-row>
               <v-btn
-                v-bind:disabled="achievement.unexpected"
                 v-on:click="decrementActual(60)"
                 icon
               >
                 <v-icon>mdi-chevron-double-left</v-icon>
               </v-btn>
               <v-btn
-                v-bind:disabled="achievement.unexpected"
                 v-on:click="decrementActual(15)"
                 icon
               >
@@ -107,14 +111,12 @@
                 required
               ></v-text-field>
               <v-btn
-                v-bind:disabled="achievement.unexpected"
                 v-on:click="incrementActual(15)"
                 icon
               >
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
               <v-btn
-                v-bind:disabled="achievement.unexpected"
                 v-on:click="incrementActual(60)"
                 icon
               >
@@ -215,6 +217,7 @@ export default {
   name: 'EditAchievement',
   data: function() {
     return {
+      dates: [],
     };
   },
   model: {
@@ -224,16 +227,29 @@ export default {
   props: {
     achievement: Object,
     hidetask: Boolean,
+    update: Boolean,
   },
   methods: {
-    cancel: function() { this.$emit('close'); },
+    cancel: function() { 
+      this.dates=[]; 
+      this.$emit('close'); 
+    },
     apply: async function() { 
       this.achievement.user = this.$store.state.user;
-      await request.post(
-        '/achievement',
-        this.achievement
-      );
-      await this.$store.dispatch('getAchievements');
+      if(this.update) {
+          await request.post(
+            '/achievement/' + this.achievement._id,
+            this.achievement
+          );
+      }else {
+          this.achievement.dates = this.dates;
+          await request.post(
+            '/achievement',
+            this.achievement
+          );
+      }
+      await this.$store.dispatch('getEvents');
+      this.dates = [];
       this.$emit('close'); 
     },
 

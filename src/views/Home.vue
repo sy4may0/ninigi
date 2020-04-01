@@ -4,12 +4,20 @@
       <v-col cols="1">
       </v-col>
       <v-col cols="3">
-        <TaskCtl></TaskCtl>
+        <p
+          v-if="$store.state.user === undefined"
+        > Prease select user.</p>
+        <TaskCtl
+          v-if="$store.state.user !== undefined"
+        ></TaskCtl>
       </v-col>
       <v-col cols="7">
-        <CalendarCtl></CalendarCtl>
+        <CalendarCtl
+          v-if="$store.state.user !== undefined"
+        ></CalendarCtl>
       </v-col>
     </v-row>
+
   </v-content>
 </template>
 
@@ -23,6 +31,7 @@ export default {
   components: {
     TaskCtl,
     CalendarCtl,
-  }
+  },
+  
 }
 </script>

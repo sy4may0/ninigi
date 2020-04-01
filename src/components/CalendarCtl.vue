@@ -51,6 +51,7 @@
       <EditAchievement 
         v-model="selected"
         :hidetask="false"
+        :update="selectedIsUpdate"
         @close="closeAchievement"
       ></EditAchievement>
 
@@ -85,9 +86,15 @@
           <v-spacer></v-spacer>
           <v-btn 
             icon
-            v-on:click="openAchievement(selected)"
+            v-on:click="openAchievement(selected, true)"
           >
             <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn 
+            icon
+            v-on:click="openAchievement(selected, false)"
+          >
+            <v-icon>mdi-content-copy</v-icon>
           </v-btn>
           <v-btn 
             icon
@@ -128,6 +135,7 @@ export default {
   data: function(){
     return {
       selected: this.$store.state.initAchievement,
+      selectedIsUpdate: false,
       selectedElement: undefined, 
       focus: '',
       selectedOpen: false, 
@@ -158,26 +166,20 @@ export default {
     // Handle @click some Achievement Create/Update buttons.
     // - Copy achievement Object to be it to editable.
     // - Toggle <achievementDialog> dialog switch.
-    openAchievement: function(achievement) {
+    openAchievement: function(achievement, isUpdate) {
       this.selected = Object.assign({}, achievement);
-      if(this.selected.date === undefined) {
-        this.selected.dates = [];
-      }else if(!Array.isArray(this.selected.date)) {
-        const arr = [this.selected.date];
-        this.selected.dates = arr;
-      }
+      this.selectedIsUpdate = isUpdate;
       this.achievementDialog = true;
     },
+
     openRemoveAchievement: function(achievement) {
       this.selected =  achievement;
       this.removeAchievementDialog = true;
     },
     closeAchievement: function() {
-      this.selected = this.$store.state.initAchievement;
       this.achievementDialog = false;
     },
     closeRemoveAchievement: function() {
-      this.selected = this.$store.state.initAchievement;
       this.removeAchievementDialog = false;
     },
 

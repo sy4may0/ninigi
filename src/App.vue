@@ -10,29 +10,67 @@
       <!--
         ユーザー 
       -->
-      <v-select
-        v-model="user"
-        :items="$store.state.users"
-        item-text="text"
-        item-value="value"
-        v-on:change="changeUser"
-      ></v-select>
+      <v-toolbar-items>
+        <v-container>
+          <span>
+          <v-select
+            label="User"
+            v-model="user"
+            :items="$store.state.users"
+            :background-color="$store.state.color.sub + ' - darken-1'"
+            item-text="text"
+            item-value="value"
+            v-on:change="changeUser"
+            dense
+            outlined
+          ></v-select>
+          </span>
+        </v-container>
+      </v-toolbar-items>
+      <v-btn 
+        v-on:click="openExcelDialog"
+        outlined
+      >
+        <v-icon small>mdi-file-excel</v-icon>
+        Export XLSX
+      </v-btn>
     </v-app-bar>
 
     <v-content>
       <router-view/>
     </v-content>
 
+    <v-dialog
+      v-model="exportExcelDialog"
+      max-width="720px"
+    >
+      <ExportExcel 
+        @close="closeExcelDialog"
+      ></ExportExcel>
+    </v-dialog>
+
   </v-app>
 
 </template>
 
 <script>
+import ExportExcel from '@/components/Forms/ExportExcel.vue'
 
 export default {
   name: 'App',
-
+  data: function() {
+    return {
+      user: null,
+      exportExcelDialog: false,
+      gte: "",
+      lte: "",
+    }
+  },
   components: {
+    ExportExcel,
+  },
+  created: async function(){
+    this.$store.dispatch('getConfig');
   },
   methods: {
     changeUser: async function() {
@@ -42,9 +80,12 @@ export default {
       await t1;
       await t2;
     },
+    openExcelDialog() {
+      this.exportExcelDialog = true;
+    },
+    closeExcelDialog() {
+      this.exportExcelDialog = false;
+    }
   },
-  data: () => ({
-    user: null,
-  }),
 };
 </script>
