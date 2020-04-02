@@ -12,10 +12,22 @@ const request = axios.create({
   responseType: 'json',
 });
 
+const init_gte = new Date();
+const init_lte = new Date();
+init_gte.setDate(1);
+init_gte.setMonth(init_gte.getMonth() - 1)
+init_lte.setDate(1);
+init_lte.setMonth(init_lte.getMonth() + 2)
+
 export default new Vuex.Store({
   state: {
     apiUrl: process.env.VUE_APP_API_URL,
     user: undefined,
+
+    period: {
+      gte: init_gte,
+      lte: init_lte
+    },
 
     initTask: {
     },
@@ -35,24 +47,12 @@ export default new Vuex.Store({
 
     // [TODO] mutation and dispatch
     users: [
-      { text: "唐澤貴洋", value: "k_takahiro" },
-      { text: "長谷川亮太", value: "r_hasegawa" },
     ],
 
     projects: [
-      "INITS",
-      "MINITS",
-      "GOSAT系",
-      "デブリ",
     ],
 
     categories: [
-      "要望事項対応",
-      "衣装対応(ソフト)",
-      "衣装対応(ハード)",
-      "提案活動(商談)",
-      "構築(設計・構築・試験含む)",
-      "雑務",
     ],
 
     color: {
@@ -90,6 +90,23 @@ export default new Vuex.Store({
         });
       }
     },
+    incrPeriod(state) {
+      state.period.gte.setMonth(state.period.gte.getMonth() + 1)
+      state.period.lte.setMonth(state.period.lte.getMonth() + 1)
+    },
+    decrPeriod(state) {
+      state.period.gte.setMonth(state.period.gte.getMonth() - 1)
+      state.period.lte.setMonth(state.period.lte.getMonth() - 1)
+    },
+    initPeriod(state) {
+      state.period.gte = new Date();
+      state.period.lte = new Date();
+      state.period.gte.setDate(1);
+      state.period.gte.setMonth(state.period.gte.getMonth() - 1)
+      state.period.lte.setDate(1);
+      state.period.lte.setMonth(state.period.lte.getMonth() + 2)
+    }
+ 
   },
   actions: {
     getConfig : async ( {commit} ) => {
@@ -114,7 +131,9 @@ export default new Vuex.Store({
     getEvents : async ( {state, commit} ) => {
       const response = await request.get('/achievement', {
         params: {
-          user: state.user 
+          user: state.user, 
+          gte: state.period.gte,
+          lte: state.period.lte
         }
       });
       const achievements = response.data;
@@ -122,6 +141,16 @@ export default new Vuex.Store({
     },
     setUser : async ({commit}, user) => {
       commit('setUser', user);
+    },
+
+    incrPeriod: ({commit}) => {
+      commit('incrPeriod');
+    },
+    decrPeriod: ({commit}) => {
+      commit('decrPeriod');
+    },
+    initPeriod: ({commit}) => {
+      commit('initPeriod');
     }
   },
   modules: {

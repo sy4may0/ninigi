@@ -186,12 +186,18 @@ export default {
     // Calendar control
     setToday: function() {
       const d = new Date();
+      this.$store.dispatch('initPeriod')
+      this.$store.dispatch('getEvents')
       this.focus = d.toISOString().substring(0,10);
     },
     prev: function() {
+      this.$store.dispatch('decrPeriod')
+      this.$store.dispatch('getEvents')
       this.$refs.calendar.prev()
     },
     next: function() {
+      this.$store.dispatch('incrPeriod')
+      this.$store.dispatch('getEvents')
       this.$refs.calendar.next()
     },
 
