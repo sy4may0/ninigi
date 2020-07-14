@@ -23,6 +23,7 @@ export default new Vuex.Store({
   state: {
     apiUrl: process.env.VUE_APP_API_URL,
     user: undefined,
+    excel: undefined,
 
     period: {
       gte: init_gte,
@@ -76,6 +77,10 @@ export default new Vuex.Store({
     setUser (state, user) {
       state.user = user;
     },
+    setExcel (state, excel) {
+      state.excel = excel;
+    },
+
     setTask (state, tasks) {
       state.tasks = tasks;
     },
@@ -142,7 +147,9 @@ export default new Vuex.Store({
     setUser : async ({commit}, user) => {
       commit('setUser', user);
     },
-
+    setExcel : async ({commit}, excel) => {
+      commit('setExcel', excel);
+    },
     incrPeriod: ({commit}) => {
       commit('incrPeriod');
     },

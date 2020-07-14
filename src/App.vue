@@ -74,7 +74,8 @@ export default {
   },
   methods: {
     changeUser: async function() {
-      await this.$store.dispatch('setUser', this.user);
+      await this.$store.dispatch('setUser', this.user.user);
+      await this.$store.dispatch('setExcel', this.user.excel);
       const t1 = this.$store.dispatch('getTasks');
       const t2 = this.$store.dispatch('getEvents');
       await t1;

@@ -100,7 +100,7 @@
             v-if="state === 'download'"
             cols="12" 
           >
-              <a target="_blank" v-bind:href="link" v-bind:download="$store.state.user + '.xlsx'">Download XLSX</a>
+              <a target="_blank" v-bind:href="link" v-bind:download=$store.state.excel>Download XLSX</a>
           </v-col>
         </v-row>
       </v-container>
