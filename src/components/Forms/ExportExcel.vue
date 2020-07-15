@@ -163,6 +163,7 @@ export default {
       const promise = request.get('/excel', {
         params: {
           user: this.$store.state.user,
+          filename: this.$store.state.excel,
           gte: this.gte,
           lte: this.lte
         }
